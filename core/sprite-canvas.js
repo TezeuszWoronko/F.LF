@@ -64,7 +64,7 @@ function sprite (config)
 		return new sprite_group(config);
 	if( config.type==='group')
 		return new sprite_group(config);
-	
+	this.loading = false
 	this.img={};
 	this.cur_img=null;
 	this.x=0; this.y=0; this.z=0;
@@ -172,6 +172,7 @@ sprite.prototype.set_text=function(text,textcolor,font)
 sprite.prototype.add_img=function(imgpath,name)
 {
 	var This=this;
+	this.loading = true;
 	var img = new Image();
 	var retry=0;
 	sprite._loading++;
@@ -182,6 +183,7 @@ sprite.prototype.add_img=function(imgpath,name)
 		img.onload = null;
 		img.onerror = null;
 		delete This.fit_to_img;
+		This.loading = false;
 		sprite._loading--;
 		if( sprite._loading===0)
 			if( sprite._masterconfig.onready)
@@ -228,6 +230,7 @@ sprite.prototype.set_img_x_y=function(x,y)
 
 sprite.prototype.render=function(ctx)
 {
+	if( this.loading === true) return;
 	if( this.hidden) return;
 	if( !ctx) return;
 	if( this.bgcolor)

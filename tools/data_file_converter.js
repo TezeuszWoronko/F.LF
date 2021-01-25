@@ -279,7 +279,7 @@ function convert_LF2_to_JSON(input)
 	function add(T,S,s) //target, "property_s_value"
 	{
 		var A = S.split(s);
-		if( A.length > 2) alert(A.join());
+		// if( A.length > 2) console.error('error '+ A.join());
 		if( A[0]) A[0] = trim(A[0]);
 		if( A[1]) A[1] = trim(A[1]);
 		if( A[1])
