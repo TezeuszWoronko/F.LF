@@ -47,7 +47,7 @@ Global)
 				AI_ids.push(setting.player[i].controller.id);
 		}
 		if( !setting.set) setting.set={};
-
+		console.log("loading done");
 		$.gameover_state = false;
 		$.randomseed = $.new_randomseed();
 		$.create_scenegraph();
@@ -315,38 +315,41 @@ Global)
 		}
 	}
 
-	match.prototype.create_characters=function(players)
+	match.prototype.create_character=function(player, match)
 	{
-		var $=this;
+		var $ = match;
 		var char_config =
 		{
 			match: $,
 			controller: null,
 			team: 0
 		};
-		for( var i=0; i<players.length; i++)
+		var player_obj = util.select_from($.data.object,{id:player.id});
+		var pdata = player_obj.data;
+		preload_pack_images(player_obj);
+		var controller = setup_controller(player);
+		
+		//create character
+		var char = new factory.character(char_config, pdata, player.id);
+		if( controller.type==='AIcontroller')
 		{
-			var player = players[i];
-			var player_obj = util.select_from($.data.object,{id:player.id});
-			var pdata = player_obj.data;
-			preload_pack_images(player_obj);
-			var controller = setup_controller(player);
-			//create character
-			var char = new factory.character(char_config, pdata, player.id);
-			if( controller.type==='AIcontroller')
-			{
-				var AIcontroller = util.select_from($.data.AI,{id:player.controller.id}).data;
-				$.AIscript.push(new AIcontroller(char,$,controller));
-			}
-			//positioning
-			var pos=$.background.get_pos($.random(),$.random());
-			char.set_pos( pos.x, pos.y, pos.z);
-			var uid = $.scene.add(char);
-			$.character[uid] = char;
-			//pane
-			if( $.panel)
-				create_pane(i);
+			var AIcontroller = util.select_from($.data.AI,{id:player.controller.id}).data;
+			$.AIscript.push(new AIcontroller(char,$,controller));
 		}
+		//positioning
+		var pos=$.background.get_pos(0.5,0.5);
+		char.set_pos( pos.x, pos.y, pos.z);
+		var uid = $.scene.add(char);
+		$.character[uid] = char;
+		char.player = player;
+		for( var i=0; i<$.panel.length; i++)
+		{
+			if($.panel[i].name === player.name)
+				$.panel[i].uid = uid;
+		}
+
+		return {pdata, uid}
+
 		function preload_pack_images(char)
 		{
 			for( var j=0; j<char.pack.length; j++)
@@ -384,6 +387,21 @@ Global)
 			char_config.team = player.team;
 			controller.sync = true;
 			return controller;
+		}
+	}
+
+	match.prototype.create_characters=function(players)
+	{
+		var $=this;
+		for( var i=0; i<players.length; i++)
+		{
+			var player = players[i];
+			var chardata = $.create_character(player, $)
+			var pdata = chardata.pdata;
+			var uid = chardata.uid;
+			//pane
+			if( $.panel)
+				create_pane(i);
 		}
 		function create_pane(i)
 		{

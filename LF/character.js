@@ -5,6 +5,7 @@ define(['LF/livingobject','LF/global','core/combodec','core/util','LF/util'],
 function(livingobject, Global, Fcombodec, Futil, util)
 {
 	var GC=Global.gameplay;
+	var player;
 
 	var states=
 	{
@@ -1109,6 +1110,20 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			break;
 		}},
 
+		'8000':function(event,K) //transfrom
+		{	
+			switch (event) {
+			case 'combo':
+				console.log("transformation");
+				var $=this;
+				var id = $.frame.D.state - 8000;
+				$.player.id = id;
+				$.match.create_character($.player, $.match);
+				$.match.destroy_object(this);
+				break;
+			}
+		},
+
 		'x':function(event,K)
 		{	var $=this;
 			switch (event) {
@@ -1359,7 +1374,11 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		if(!K) K=null;
 		if( $.combo_buffer.combo==='jump-att') K='jump';
 
-		var tar1=$.states[$.frame.D.state];
+		var frameState = $.frame.D.state;
+		//in case of transformation call 8000
+		if(frameState >= 8000 && frameState < 9000)
+			frameState = 8000;
+		var tar1=$.states[frameState];
 		if( tar1) var res1=tar1.call($,'combo',K);
 		var tar2=$.states['generic'];
 		if(!res1)
