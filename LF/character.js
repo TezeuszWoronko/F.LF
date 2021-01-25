@@ -244,14 +244,26 @@ function(livingobject, Global, Fcombodec, Futil, util)
 							return 1;
 						}
 					}
-					//
-					var vol=$.mech.volume(Futil.make_array($.data.frame[72].itr || $.data.frame[73].itr)[0]); //super punch frames
-					var hit= $.scene.query(vol, $, {tag:'itr:6', not_team:$.team});
-					for( var t in hit)
-					{	//if someone is in my hitting scoope who has itr kind:6
-						$.trans.frame(70, 10); //I 'll use super punch!
-						return 1;
+					// super punch frames
+					var frame = $.data.frame[70]
+					while(true) {
+						if(frame.itr) {
+							var vol=$.mech.volume(Futil.make_array(frame.itr)[0]); //super punch frames
+							var hit= $.scene.query(vol, $, {tag:'itr:6', not_team:$.team});
+							for( var t in hit)
+							{	//if someone is in my hitting scoope who has itr kind:6
+								$.trans.frame(70, 10); //I 'll use super punch!
+								return 1;
+							}
+						}
+						frame = $.data.frame[frame.next];
+						if(frame.next === 999) {
+							break;
+						}
 					}
+					
+					
+					
 					//
 					$.trans.frame($.match.random()<0.5? 60:65, 10);
 				return 1;
