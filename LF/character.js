@@ -140,6 +140,21 @@ function(livingobject, Global, Fcombodec, Futil, util)
 							$.trans.frame($.frame.D[tag], 11);
 							return 1;
 						}
+						//rotation from combos							
+						if( tag==='hit_Fj')
+						{
+							if( K==='D>J' || K==='D>AJ')
+								$.switch_dir('right');
+							else
+								$.switch_dir('left');
+						}
+						if( tag==='hit_Fa')
+						{
+							if( K==='D>A')
+								$.switch_dir('right');
+							else
+								$.switch_dir('left');
+						}
 					}
 				}
 			break;
@@ -1121,15 +1136,6 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			case 'state15_crouch':
 				if( $.frame.PN>=267 && $.frame.PN<=272)
 					$.trans.inc_wait(-1);
-			break;
-			case 'generic_combo':
-				if( tag==='hit_Fj')
-				{
-					if( K==='D>J' || K==='D>AJ')
-						$.switch_dir('right');
-					else
-						$.switch_dir('left');
-				}
 			break;
 			}
 		},
