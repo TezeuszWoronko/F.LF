@@ -1363,6 +1363,13 @@ function(livingobject, Global, Fcombodec, Futil, util)
 	character.prototype.type = 'character';
 	character.prototype.states = states;
 	character.prototype.states_switch_dir = states_switch_dir;
+	character.prototype.init=function(T)
+	{
+		var $=this;
+		var player = {team: T.parent.player.team, id: T.opoint.oid, controller: {id: T.parent.match.data.AI[0].id, type: 'AIscript'}}
+		var ret = T.parent.match.create_character(player, T.parent.match);
+		T.parent.match.destroy_object(this);
+	}
 	
 	character.prototype.destroy = function()
 	{
