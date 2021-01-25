@@ -6,9 +6,9 @@ define({
 			switch (O.type)
 			{
 				case 'character':
-					return true;
+					return false;
 				case 'specialattack':
-					return true;
+					return false;
 			}
 		}
 		else if( folder==='background')
