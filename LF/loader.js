@@ -62,7 +62,7 @@ define(['LF/loader-config','LF/util','core/util'],function(loader_config,util,Fu
 				}
 
 				var datafile_depend=[];
-
+				console.log("tycu");
 				for( var i in datalist)
 				{
 					if( datalist[i] instanceof Array)
@@ -70,7 +70,11 @@ define(['LF/loader-config','LF/util','core/util'],function(loader_config,util,Fu
 						for( var j=0; j<datalist[i].length; j++)
 							if( datalist[i][j].file)
 							if( allow_load(i,datalist[i][j]))
+							{
 								datafile_depend.push(filepath(datalist[i][j].file));
+								console.log(datalist[i][j].file);
+							}
+								
 					}
 					else if( typeof datalist[i]==='object')
 					{
