@@ -138,23 +138,24 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					{
 						if( !$.id_update('generic_combo',K,tag))
 						{
+							//rotation from combos							
+							if( tag==='hit_Fj')
+							{
+								if( K==='D>J' || K==='D>AJ')
+									$.switch_dir('right');
+								else
+									$.switch_dir('left');
+							}
+							if( tag==='hit_Fa')
+							{
+								if( K==='D>A')
+									$.switch_dir('right');
+								else
+									$.switch_dir('left');
+							}
+							
 							$.trans.frame($.frame.D[tag], 11);
 							return 1;
-						}
-						//rotation from combos							
-						if( tag==='hit_Fj')
-						{
-							if( K==='D>J' || K==='D>AJ')
-								$.switch_dir('right');
-							else
-								$.switch_dir('left');
-						}
-						if( tag==='hit_Fa')
-						{
-							if( K==='D>A')
-								$.switch_dir('right');
-							else
-								$.switch_dir('left');
 						}
 					}
 				}
