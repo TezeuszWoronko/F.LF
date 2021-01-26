@@ -1147,7 +1147,11 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				var $=this;
 				var id = $.frame.D.state - 8000;
 				$.player.id = id;
-				$.match.create_character($.player, $.match);
+				var charData = $.match.create_character($.player, $.match);
+				charData.char.set_pos($.ps.x, $.ps.y, $.ps.z);
+				charData.char.ps.dir = $.ps.dir;
+				charData.char.health = $.health;
+				charData.char.trans.frame($.frame.D.next);
 				$.match.destroy_object(this);
 				break;
 			}

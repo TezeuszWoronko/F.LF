@@ -348,7 +348,7 @@ Global)
 				$.panel[i].uid = uid;
 		}
 
-		return {pdata, uid}
+		return {pdata, uid, char}
 
 		function preload_pack_images(char)
 		{
