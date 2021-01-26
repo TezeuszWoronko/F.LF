@@ -443,19 +443,21 @@ Global)
 		{
 			if( $.panel[i].uid!==undefined)
 			{
-				var ch = $.character[$.panel[i].uid],
-					hp = Math.floor(ch.health.hp/ch.health.hp_full*$.data.UI.data.panel.hpw);
-					hp_bound = Math.floor(ch.health.hp_bound/ch.health.hp_full*$.data.UI.data.panel.hpw);
-				if( hp<0) hp=0;
-				if( hp_bound<0) hp_bound=0;
-				if($.panel && $.panel[i] && $.panel[i].hp && $.panel[i].mp) {
-					$.panel[i].hp.set_w(hp);
-					$.panel[i].hp_bound.set_w(hp_bound);
-					$.panel[i].mp.set_w(Math.floor(ch.health.mp/ch.health.mp_full*$.data.UI.data.panel.mpw));
-					if( ch.effect.heal && ch.effect.heal>0 && $.time.t%3==0)
-						$.panel[i].hp.set_bgcolor( $.data.UI.data.panel.hp_light);
-					else
-						$.panel[i].hp.set_bgcolor( $.data.UI.data.panel.hp_bright);
+				var ch = $.character[$.panel[i].uid]
+				if(ch != null) {
+					var hp = Math.floor(ch.health.hp/ch.health.hp_full*$.data.UI.data.panel.hpw);
+						hp_bound = Math.floor(ch.health.hp_bound/ch.health.hp_full*$.data.UI.data.panel.hpw);
+					if( hp<0) hp=0;
+					if( hp_bound<0) hp_bound=0;
+					if($.panel && $.panel[i] && $.panel[i].hp && $.panel[i].mp) {
+						$.panel[i].hp.set_w(hp);
+						$.panel[i].hp_bound.set_w(hp_bound);
+						$.panel[i].mp.set_w(Math.floor(ch.health.mp/ch.health.mp_full*$.data.UI.data.panel.mpw));
+						if( ch.effect.heal && ch.effect.heal>0 && $.time.t%3==0)
+							$.panel[i].hp.set_bgcolor( $.data.UI.data.panel.hp_light);
+						else
+							$.panel[i].hp.set_bgcolor( $.data.UI.data.panel.hp_bright);
+					}
 				}
 			}
 		}
@@ -472,7 +474,7 @@ Global)
 			if( $.panel[i].uid!==undefined)
 			{
 				var ch = $.character[$.panel[i].uid];
-				if( ch.health.hp>0)
+				if( ch != null && ch.health.hp>0)
 					teams[ch.team] = true;
 			}
 		}

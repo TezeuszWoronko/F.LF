@@ -1387,8 +1387,11 @@ function(livingobject, Global, Fcombodec, Futil, util)
 	character.prototype.init=function(T)
 	{
 		var $=this;
-		var player = {team: T.parent.player.team, id: T.opoint.oid, controller: {id: T.parent.match.data.AI[0].id, type: 'AIscript'}}
-		var ret = T.parent.match.create_character(player, T.parent.match);
+		var player = {team: T.parent.team, id: T.opoint.oid, controller: {id: T.parent.match.data.AI[0].id, type: 'AIscript'}}
+		var charData = T.parent.match.create_character(player, T.parent.match);
+		charData.char.set_pos(T.pos.x + T.opoint.x, T.pos.y + T.opoint.y, T.z);
+		charData.char.ps.dir = T.dir;
+		charData.char.trans.frame(T.opoint.action);
 		T.parent.match.destroy_object(this);
 	}
 	
@@ -1640,7 +1643,6 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			break;
 			}
 		}
-
 		$.injury(inj);
 		if( accepthit)
 		{
@@ -1687,7 +1689,8 @@ function(livingobject, Global, Fcombodec, Futil, util)
 	character.prototype.pre_interaction=function()
 	{
 		var $=this;
-		var ITR_LIST=Futil.make_array($.trans.next_frame_D().itr);
+		var nextFrameItr = ($.trans.next_frame_D() || {}).itr
+		var ITR_LIST=Futil.make_array(nextFrameItr);
 
 		for( var i in ITR_LIST)
 		{
@@ -1781,7 +1784,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					var canhit = true;
 					switch (ITR.effect)
 					{
-					case 0: case 1:
+					case undefined: case 0: case 1:
 						if( hit[t].type==='character' && hit[t].team===$.team) //cannot attack characters of same team
 							canhit = false;
 					break;
