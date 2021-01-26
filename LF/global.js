@@ -83,6 +83,7 @@ GC.default.health={};
 GC.default.health.hp_full=500;
 GC.default.health.mp_full=500;
 GC.default.health.mp_start=200; //it cannot be overriden
+GC.default.health.mp_charge=10;
 
 GC.default.itr={};
 GC.default.itr.zwidth= 12; //default itr zwidth

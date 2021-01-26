@@ -102,7 +102,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				if( $.match.time.t%3===0)
 				if( $.health.mp < $.health.mp_full)
 				{
-					$.health.mp+= 1+Math.floor(($.health.hp_full-($.health.hp<$.health.hp_full?$.health.hp:$.health.hp_full))/100);
+					//this formula makes it so that mana regen is faster when you have low health, but we want a steady income
+					//$.health.mp+= 1+Math.floor(($.health.hp_full-($.health.hp<$.health.hp_full?$.health.hp:$.health.hp_full))/100);
+					$.health.mp+=1;
 				}
 				//recovery
 				if( $.health.fall>0) $.health.fall += GC.recover.fall;
@@ -1037,6 +1039,20 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		'16':function(event,K) //injured 2 (dance of pain)
 		{	var $=this;
 			switch (event) {
+		}},
+
+		'17':function(event,K) //injured 2 (dance of pain)
+		{	
+			var $=this;
+			switch (event) {
+				case'TU':
+				if( $.health.mp < $.health.mp_full)
+				{
+					$.health.mp += GC.default.health.mp_charge;
+					if($.health.mp > $.health.mp_full)
+						$.health.mp = $.health.mp_full;
+				}
+				break;
 		}},
 
 		'18':function(event,K) //burning
