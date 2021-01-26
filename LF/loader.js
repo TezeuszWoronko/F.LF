@@ -62,7 +62,6 @@ define(['LF/loader-config','LF/util','core/util'],function(loader_config,util,Fu
 				}
 
 				var datafile_depend=[];
-				console.log("tycu");
 				for( var i in datalist)
 				{
 					if( datalist[i] instanceof Array)

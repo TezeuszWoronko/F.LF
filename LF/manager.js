@@ -256,6 +256,7 @@ function Manager(package, buildinfo)
 		randomseed = new Random();
 		randomseed.seed(824163532);
 		
+		
 		//prepare
 		char_list = util.select_from(package.data.object,{type:'character'});
 		char_list[-1] = {name:'Random'}
@@ -375,6 +376,7 @@ function Manager(package, buildinfo)
 	{
 		'frontpage':
 		{
+			//session.control.block=true;
 			bgcolor:package.data.UI.data.frontpage.bg_color,
 			create:function()
 			{
@@ -410,11 +412,14 @@ function Manager(package, buildinfo)
 			onactive:function()
 			{
 				this.demax(!window_state.maximized);
+				Fcontroller.disable(true);
 			},
 			deactive:function()
 			{
 				this.demax(true);
+				Fcontroller.enable(true);
 			},
+			
 			demax:function(demax)
 			{
 				if( !demax) //maximize
@@ -845,18 +850,20 @@ function Manager(package, buildinfo)
 						switch(key)
 						{
 							case 'att':
-								players[i].use=true;
-								players[i].type='human';
-								players[i].name=session.player[i]?session.player[i].name:'';
-								players[i].step++;
-								var finished=true;
-								for( var k=0; k<players.length; k++)
-									finished = finished && (players[k].use? players[k].step===3:true);
-								if( finished)
-								{
-									this.set_step(1);
+								if(players[i].step<3)
+									{players[i].use=true;
+									players[i].type='human';
+									players[i].name=session.player[i]?session.player[i].name:'';
+									players[i].step++;
+									var finished=true;
+									for( var k=0; k<players.length; k++)
+										finished = finished && (players[k].use? players[k].step===3:true);
+									if( finished)
+									{
+										this.set_step(1);
+									}
+									manager.sound.play('1/m_join');
 								}
-								manager.sound.play('1/m_join');
 							break;
 							case 'jump':
 								if( players[i].step>0)
@@ -864,6 +871,12 @@ function Manager(package, buildinfo)
 									players[i].step--;
 									if( players[i].step===0)
 										players[i].use = false;
+								}
+								else
+								{
+									this.reset();
+									this.set_step(0);
+									manager.switch_UI('frontpage');
 								}
 								manager.sound.play('1/m_cancel');
 							break;
@@ -894,6 +907,10 @@ function Manager(package, buildinfo)
 									if( players[i].team<0)
 										players[i].team = 4;
 								}
+							break;
+							case 'down':
+							case 'up':
+								players[i].selected=-1;
 							break;
 						}
 					},
@@ -1156,6 +1173,8 @@ function Manager(package, buildinfo)
 									case 3: break; //Background
 									case 4: break; //Difficulty
 									case 5: //Exit
+										this.reset();
+										this.set_step(0);
 										manager.switch_UI('frontpage');
 									break;
 								}

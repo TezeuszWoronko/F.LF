@@ -9,8 +9,8 @@ if( 'onhelp' in window)
 	}
 }
 
-document.addEventListener("keydown", keydown, true);
-document.addEventListener("keyup", keyup, true);
+//document.addEventListener("keydown", keydown, true);
+//document.addEventListener("keyup", keyup, true);
 function keydown(e) { return master_controller.key(e,1); }
 function keyup(e) { return master_controller.key(e,0); }
 
@@ -133,6 +133,20 @@ controller.block = function(bool)
 {
 	master_controller.block = bool;
 }
+
+//disables all keybindss
+controller.disable = function(bool)
+{
+	document.removeEventListener('keydown', keydown, bool);
+	document.removeEventListener('keyup', keyup, bool);
+}
+//enables all keybindss
+controller.enable = function(bool)
+{
+	document.addEventListener('keydown', keydown, bool);
+	document.addEventListener('keyup', keyup, bool);
+}
+
 
 /*\
  * controller.destroy
