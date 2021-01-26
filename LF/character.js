@@ -261,14 +261,26 @@ function(livingobject, Global, Fcombodec, Futil, util)
 							return 1;
 						}
 					}
-					//
-					var vol=$.mech.volume(Futil.make_array($.data.frame[72].itr || $.data.frame[73].itr)[0]); //super punch frames
-					var hit= $.scene.query(vol, $, {tag:'itr:6', not_team:$.team});
-					for( var t in hit)
-					{	//if someone is in my hitting scoope who has itr kind:6
-						$.trans.frame(70, 10); //I 'll use super punch!
-						return 1;
+					// super punch frames
+					var frame = $.data.frame[70]
+					while(true) {
+						if(frame.itr) {
+							var vol=$.mech.volume(Futil.make_array(frame.itr)[0]); //super punch frames
+							var hit= $.scene.query(vol, $, {tag:'itr:6', not_team:$.team});
+							for( var t in hit)
+							{	//if someone is in my hitting scoope who has itr kind:6
+								$.trans.frame(70, 10); //I 'll use super punch!
+								return 1;
+							}
+						}
+						frame = $.data.frame[frame.next];
+						if(frame.next === 999) {
+							break;
+						}
 					}
+					
+					
+					
 					//
 					$.trans.frame($.match.random()<0.5? 60:65, 10);
 				return 1;
@@ -1352,6 +1364,13 @@ function(livingobject, Global, Fcombodec, Futil, util)
 	character.prototype.type = 'character';
 	character.prototype.states = states;
 	character.prototype.states_switch_dir = states_switch_dir;
+	character.prototype.init=function(T)
+	{
+		var $=this;
+		var player = {team: T.parent.player.team, id: T.opoint.oid, controller: {id: T.parent.match.data.AI[0].id, type: 'AIscript'}}
+		var ret = T.parent.match.create_character(player, T.parent.match);
+		T.parent.match.destroy_object(this);
+	}
 	
 	character.prototype.destroy = function()
 	{
