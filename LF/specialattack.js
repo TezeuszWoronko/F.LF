@@ -101,65 +101,22 @@ var GC=Global.gameplay;
 		{	var $=this;
 			switch (event) {
 
-			case 'hit_others':
-				//check if att is ice or fire
-				if( ITR.effect===3 && att.type==='specialattack' && att.state()===3000 && att.frame.D.itr.effect!==3 && att.frame.D.itr.effect!==2)
-					//freeze ball hit another non freeze ball
-					return;
-				if( ITR.effect!==3 && ITR.effect!==2 && att.type==='specialattack' && att.frame.D.itr.effect===3)
-				{	//non freeze or fire ball hit another freeze ball
-					$.ps.vx = 0;
-					$.trans.frame(1000);
-					$.match.create_object({kind: 1, x: 41, y: 50, action: 0, dvx: 0, dvy: 0, oid: 209, facing: 0}, att);
-					return true;
-				}
+			case 'hit_others':	
 				$.ps.vx = 0;
+				$.ps.vz = 0;
 				$.trans.frame(10);
 			break;
-
+			
 			case 'hit': //hit by others
-				if( $.frame.D.itr.kind===14) //ice column
-				{
-					$.trans.set_wait(0,20); //go to break frame
-					return true;
-				}
+				//can only attack objects of same team if head on collide
 				if( att.team===$.team && att.ps.dir===$.ps.dir)
-					//can only attack objects of same team if head on collide
 					return false;
-				//check if att is ice or fire
-				if( $.frame.D.itr.effect===3 && att.type==='specialattack' && att.state()===3000 && att.frame.D.itr.effect!==3 && att.frame.D.itr.effect!==2)
-					//freeze ball hit by non freeze ball
-					return true;
-				if( att.type==='specialattack')
+				else
 				{
-					if( $.frame.D.itr.effect!==3 && $.frame.D.itr.effect!==2 && ITR.effect===3)
-					{	//non freeze or fire ball hit by freeze ball
-						$.ps.vx = 0;
-						$.trans.frame(1000);
-						$.match.create_object({kind: 1, x: 41, y: 50, action: 0, dvx: 0, dvy: 0, oid: 209, facing: 0}, att);
-						return true;
-					}
-					if( ITR.kind===0)
-					{
-						$.ps.vx = 0;
-						$.trans.frame(20);
-						return true;
-					}
-				}
-				if( att.state()===19) //firerun destroys 3000 projectiles
-				{
-					$.ps.vx = 0;
-					$.trans.frame(20); //hit
-					return true;
-				}
-				if( ITR.kind===0 ||
-					ITR.kind===9) //itr:kind:9 can deflect all balls
-				{
-					$.ps.vx = 0;
-					$.team = att.team;
-					$.trans.frame(30); //rebound
-					$.trans.trans(); $.TU_update(); $.trans.trans(); $.TU_update(); //transit and update immediately
-					return true;
+					 $.ps.vx = 0;
+					 $.ps.vz = 0;
+					 $.trans.frame(10); //go to hitting frame
+					 return true;
 				}
 			break;
 
@@ -211,31 +168,12 @@ var GC=Global.gameplay;
 				}
 			break;
 			case 'hit': //hit by others
-				if( ITR.kind===9) //3006 can only be reflected by shield
-				{
-					$.ps.vx *= -1;
-					$.ps.z += 0.3;
-					return true;
-				}
 				if( att.type==='specialattack' &&
 					(att.state()===3005 || att.state()===3006)) //3006 can only be destroyed by 3005 or 3006
 				{
 					$.trans.frame(20);
 					$.ps.vx = 0;
 					$.ps.vz = 0;
-					return true;
-				}
-				if( att.type==='specialattack' &&
-					att.state()===3000)
-				{
-					$.ps.vx = ($.ps.vx>0?-1:1) * 7; //deflect
-					return true;
-				}
-				if( ITR.kind===0)
-				{
-					$.ps.vx = ($.ps.vx>0?-1:1) * 1; //deflect a little bit
-					if( ITR.bdefend && ITR.bdefend > GC.defend.break_limit)
-						$.health.hp = 0;
 					return true;
 				}
 			break;
