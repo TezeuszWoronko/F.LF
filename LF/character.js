@@ -632,26 +632,27 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				 {
 					 case 123: //a successful attack
 						$.statemem.attacks++;
+						//commented out ~Tobi
 						//$.statemem.counter+=3;
-						//$.trans.inc_wait(10);
-						//temp code, there is some system with there attacks and counters but i don't know what it is
-						// if($.frame.D.next === 123)
-						// {
-						// 	$.catching.caught_release();
-						// 	$.trans.frame(999,15);
-						// }
+						//$.trans.inc_wait(1);
 					 	break;
 					 case 233: case 234:
 					 	$.trans.inc_wait(-1);
 					 	break;
 				 }
 				if( $.catching && $.frame.D.cpoint)
+				{
 					$.catching.caught_b(
 						$.mech.make_point($.frame.D.cpoint),
 						$.frame.D.cpoint,
 						$.ps.dir,
 						$.dirv()
 					);
+					if($.frame.D.cpoint.injury)
+					{
+						$.catching.injury($.frame.D.cpoint.injury);
+					}
+				}
 			break;
 
 			case 'TU':
