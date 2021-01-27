@@ -617,6 +617,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				$.statemem.stateTU=true;
 				$.statemem.counter=43;
 				$.statemem.attacks=0;
+				$.ps.vx = 0;
+				$.ps.vy = 0;
+				$.ps.vz = 0;
 			break;
 
 			case 'state_exit':
@@ -625,17 +628,23 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			break;
 
 			case 'frame':
-				switch ($.frame.N)
-				{
-					case 123: //a successful attack
-					$.statemem.attacks++;
-					$.statemem.counter+=3;
-					$.trans.inc_wait(1);
-					break;
-					case 233: case 234:
-					$.trans.inc_wait(-1);
-					break;
-				}
+				 switch ($.frame.N)
+				 {
+					 case 123: //a successful attack
+						$.statemem.attacks++;
+						$.statemem.counter+=3;
+						$.trans.inc_wait(1);
+						//temp code, there is some system with there attacks and counters but i don't know what it is
+						if($.frame.D.next === 123)
+						{
+							$.catching.caught_release();
+							$.trans.frame(999,15);
+						}
+					 	break;
+					 case 233: case 234:
+					 	$.trans.inc_wait(-1);
+					 	break;
+				 }
 				if( $.catching && $.frame.D.cpoint)
 					$.catching.caught_b(
 						$.mech.make_point($.frame.D.cpoint),

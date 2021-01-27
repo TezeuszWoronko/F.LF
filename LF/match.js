@@ -285,7 +285,8 @@ Global)
 				var config =
 				{
 					match: $,
-					team: T.team
+					team: T.team,
+					frameN: T.opoint.action
 				};
 				var obj = new factory[OBJ.type](config, OBJ.data, T.opoint.oid);
 				obj.init(T);

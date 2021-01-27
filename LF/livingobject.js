@@ -60,7 +60,7 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 		{
 			PN: 0, //previous frame number
 			N: 0, //current frame number
-			D: data.frame[0], //current frame's data object
+			D: data.frame[config.frameN? config.frameN:0], //current frame's data object
 			ani: //animation sequence
 			{
 				i:0, up:true
@@ -270,6 +270,7 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 		var tar1=$.states['generic'];
 		if( tar1) var res1=tar1.apply($,arguments);
 		//
+		if($.frame.D === undefined) return;
 		var tar2=$.states[$.frame.D.state];
 		if( tar2) var res2=tar2.apply($,arguments);
 		//
