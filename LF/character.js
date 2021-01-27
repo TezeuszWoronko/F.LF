@@ -632,14 +632,14 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				 {
 					 case 123: //a successful attack
 						$.statemem.attacks++;
-						$.statemem.counter+=3;
-						$.trans.inc_wait(1);
+						//$.statemem.counter+=3;
+						//$.trans.inc_wait(10);
 						//temp code, there is some system with there attacks and counters but i don't know what it is
-						if($.frame.D.next === 123)
-						{
-							$.catching.caught_release();
-							$.trans.frame(999,15);
-						}
+						// if($.frame.D.next === 123)
+						// {
+						// 	$.catching.caught_release();
+						// 	$.trans.frame(999,15);
+						// }
 					 	break;
 					 case 233: case 234:
 					 	$.trans.inc_wait(-1);
@@ -693,9 +693,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				if( $.catching)
 					$.statemem.counter--;
 				if( $.statemem.counter<=0)
-				if( !($.frame.N===122 && $.statemem.attacks===4)) //let it finish the 5th punch
-				if( $.frame.N===121 || $.frame.N===122)
-				{
+				if( !($.frame.N===122 && $.statemem.attacks===4)){ //let it finish the 5th punch
+				// if( $.frame.N===121 || $.frame.N===122)
+				// {
 					$.catching.caught_release();
 					$.trans.frame(999,15);
 				}
