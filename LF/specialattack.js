@@ -175,6 +175,27 @@ var GC=Global.gameplay;
 		{	var $=this;
 			switch (event) {
 		}},
+		//State 3002 is used in the hit frames. If the ball hits a character while it has state 3002, then it won't go to the hitting frame (20).
+		'3002':function(event,K)
+		{	var $=this;
+			switch (event) {
+		}},
+		//State 3003 is used in the rebound frames.  If the ball hits a character while it has state 3003, then it won't go to the hitting frame (20).
+		'3003':function(event,K)
+		{	var $=this;
+			switch (event) {
+		}},
+		//State 3004 is used in the disappear frames (example: Davis_Ball, frame 40). If the ball hits a character while it has state 3004, then it won't go to the hitting frame (20).
+		'3004':function(event,K)
+		{	var $=this;
+			switch (event) {
+		}},
+		//State 3005 is one of the only states that hides an object's shadow.  If you use it in a ball's flying frames, it'll destroy any other ball attack it hits (it's stronger than state 3000 and state 3006).
+		//TO DO: hide shadow
+		'3005':function(event,K)
+		{	var $=this;
+			switch (event) {
+		}},
 
 		'3006':function(event, ITR, att, attps, rect)
 		{	var $=this;
