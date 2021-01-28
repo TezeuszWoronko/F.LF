@@ -2,8 +2,8 @@
  * special attack
 \*/
 
-define(['LF/livingobject','LF/global','core/util'],
-function(livingobject, Global, Futil)
+define(['LF/livingobject','LF/global','core/util', 'core/math'],
+function(livingobject, Global, Futil, Math)
 {
 var GC=Global.gameplay;
 
@@ -70,7 +70,9 @@ var GC=Global.gameplay;
 				/*	<zort> chasing ball seeks for 72 frames, not counting just after (quantify?) it's launched or deflected. Internally, LF2 keeps a variable keeping track of how long the ball has left to seek, which starts at 500 and decreases by 7 every frame until it reaches 0. while seeking, its maximum x speed is 14, and its x acceleration is 0.7; it can climb or descend, by 1 px/frame; and its maximum z speed is 2.2, with z acceleration .4. when out of seeking juice, its speed is 17. the -7 in the chasing algorithm comes from hit_a: 7.
 				*/
 				if( $.frame.D.hit_Fa===1 ||
-					$.frame.D.hit_Fa===2)
+					$.frame.D.hit_Fa===2 ||
+					$.frame.D.hit_Fa===3 ||
+					$.frame.D.hit_Fa===7)
 				if( $.health.hp>0)
 				{
 					$.chase_target();
@@ -125,33 +127,6 @@ var GC=Global.gameplay;
 				if( $.match.broken_list[$.id])
 					$.brokeneffect_create($.id);
 			break;
-		}},
-
-		//	State 3001 - Ball Flying / Hitting is used in the hitting frames, but you can also use this state directly in the flying frames.  If the ball hits a character while it has state 3001, then it won't go to the hitting frame (20).  It's the same for states 3002 through 3004. 
-		'3001':function(event,K)
-		{	var $=this;
-			switch (event) {
-		}},
-		//State 3002 is used in the hit frames. If the ball hits a character while it has state 3002, then it won't go to the hitting frame (20).
-		'3002':function(event,K)
-		{	var $=this;
-			switch (event) {
-		}},
-		//State 3003 is used in the rebound frames.  If the ball hits a character while it has state 3003, then it won't go to the hitting frame (20).
-		'3003':function(event,K)
-		{	var $=this;
-			switch (event) {
-		}},
-		//State 3004 is used in the disappear frames (example: Davis_Ball, frame 40). If the ball hits a character while it has state 3004, then it won't go to the hitting frame (20).
-		'3004':function(event,K)
-		{	var $=this;
-			switch (event) {
-		}},
-		//State 3005 is one of the only states that hides an object's shadow.  If you use it in a ball's flying frames, it'll destroy any other ball attack it hits (it's stronger than state 3000 and state 3006).
-		//TO DO: hide shadow
-		'3005':function(event,K)
-		{	var $=this;
-			switch (event) {
 		}},
 
 		'3006':function(event, ITR, att, attps, rect)
@@ -307,6 +282,13 @@ var GC=Global.gameplay;
 	specialattack.prototype.killed=function()
 	{
 		this.parent.killed();
+	}
+	specialattack.prototype.hit_ground = function()
+	{
+		this.trans.set_next(60);
+		this.ps.vy = 0;
+		this.ps.vx = 0;
+		this.ps.vz = 0;
 	}
 
 	specialattack.prototype.chase_target=function()

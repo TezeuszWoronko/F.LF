@@ -482,6 +482,10 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 		return ($.ps.dir==='left'?-1:1);
 	}
 
+	livingobject.prototype.hit_ground = function()
+	{
+	}
+
 	livingobject.prototype.dirv = function()
 	{
 		var $=this;

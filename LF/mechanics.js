@@ -365,6 +365,8 @@ mech.prototype.dynamics= function()
 	{	//never below the ground
 		ps.y=0;
 		ps.sy = ps.y - fD.centery;
+		if(ps.vy > 0)
+			this.parent.hit_ground();
 	}
 
 	sp.set_x_y(Math.floor(ps.sx), Math.floor(ps.sy+ps.sz)); //projection onto screen
