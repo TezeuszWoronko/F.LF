@@ -646,8 +646,10 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 					if( $.health.hp<=0 && $.frame.D.state===14)
 						return;
 
-					if( next===999)
-						next=0;
+					if( next===999 && $.ps.y!==0 && $.ps.vy!==0 && $.player)	//check if in air and if not a weapon 
+						next=212;
+					else if( next===999)
+						next = 0;
 					$.frame.PN=$.frame.N;
 					$.frame.N=next;
 					$.state_update('frame_exit');
