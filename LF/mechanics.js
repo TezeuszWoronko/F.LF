@@ -380,8 +380,10 @@ mech.prototype.dynamics= function()
 	if( ps.y===0 && this.mass>0) //only when on the ground
 	{
 		//simple friction
-		if( ps.vx) ps.vx += (ps.vx>0?-1:1)*ps.fric;
-		if( ps.vz) ps.vz += (ps.vz>0?-1:1)*ps.fric;
+		this.linear_friction(
+			(ps.fric / this.mass) * Math.sqrt(Math.abs(ps.vx / 5)),
+			(ps.fric / this.mass) * Math.sqrt(Math.abs(ps.vz / 5))
+		);
 		if( ps.vx!==0 && ps.vx>-GC.min_speed && ps.vx<GC.min_speed) ps.vx=0; //defined minimum speed
 		if( ps.vz!==0 && ps.vz>-GC.min_speed && ps.vz<GC.min_speed) ps.vz=0;
 	}
