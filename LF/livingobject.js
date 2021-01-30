@@ -39,18 +39,7 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 		$.bg=$.match.background;
 
 		//states
-		$.sp = new Sprite(data.bmp, $.match.stage);
-		$.sp.width = data.bmp.file[0].w;
-		if( !$.proper('no_shadow'))
-		{
-			var sp_sha=
-			{
-				canvas: $.match.stage,
-				wh: 'fit',
-				img: $.bg.shadow.img
-			}
-			$.shadow = new Fsprite(sp_sha);
-		}
+		
 		$.health=
 		{
 			hp: 100,
@@ -66,6 +55,20 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 				i:0, up:true
 			}
 		};
+		//shadow
+		$.sp = new Sprite(data.bmp, $.match.stage);
+		$.sp.width = data.bmp.file[0].w;
+		if( !$.proper('no_shadow') && $.frame.D.state!==3005)	//state 3005 no shadow
+		{
+			var sp_sha=
+			{
+				canvas: $.match.stage,
+				wh: 'fit',
+				img: $.bg.shadow.img
+			}
+			$.shadow = new Fsprite(sp_sha);
+		}
+
 		$.mech = new Mech($);
 		$.AI = new AI.interface($);
 		$.ps = $.mech.create_metric(); //position, velocity, and other physical properties
