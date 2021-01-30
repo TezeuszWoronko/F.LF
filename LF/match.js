@@ -134,18 +134,24 @@ Global)
 	match.prototype.create_object=function(opoint, parent)
 	{
 		var $=this;
-		$.tasks.push({
-			task: 'create_object',
-			parent: parent,
-			opoint: opoint,
-			team: parent.team,
-			pos: parent.mech.make_point(opoint),
-			z: parent.ps.z,
-			dir: parent.ps.dir,
-			dvz: parent.dirv()*2
-		});
+		
+		var numObjects = (!opoint.facing || opoint.facing < 10) ? 1 : Math.floor(opoint.facing/10) 
+		for(var i = 0; i < numObjects; i++) {
+			var dvz = i - ((numObjects - 1) / 2)
+			dvz *= 3
+			$.tasks.push({
+				task: 'create_object',
+				parent: parent,
+				opoint: opoint,
+				team: parent.team,
+				pos: parent.mech.make_point(opoint),
+				z: parent.ps.z,
+				dir: parent.ps.dir,
+				dvz: dvz
+			});
+		}
 	}
-
+	
 	match.prototype.destroy_object=function(obj)
 	{
 		var $=this;
