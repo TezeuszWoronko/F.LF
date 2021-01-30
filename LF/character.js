@@ -229,14 +229,14 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					if( $.hold.obj && $.hold.obj.type==='heavyweapon')
 					{
 						if( !$.proper('heavy_weapon_jump'))
-							return 1;
-						else
-						{
-							$.trans.frame($.proper('heavy_weapon_jump'), 10);
-							return 1;
-						}
+						return 1;
+					else
+					{
+						$.trans.frame($.proper('heavy_weapon_jump'), 10);
+						return 1;
 					}
-					$.trans.frame(210, 10);
+				}
+									$.trans.frame(210, 10);
 				return 1;
 				case 'att':
 					if( $.hold.obj)
@@ -423,8 +423,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 						}
 						else
 						{
-							var dx = $.con.state.left !== $.con.state.right;
-							if( dx && $.proper($.hold.obj.id,'run_throw'))
+							if($.proper($.hold.obj.id,'run_throw'))
 							{
 								$.trans.frame(45, 10); //throw light weapon
 								return 1;
@@ -493,8 +492,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					{
 						if( $.hold.obj)
 						{
-							var dx = $.con.state.left !== $.con.state.right;
-							if( dx && $.proper($.hold.obj.id,'jump_throw'))
+							if($.proper($.hold.obj.id,'jump_throw'))
 								$.trans.frame(52, 10); //sky light weapon throw
 							else if( $.proper($.hold.obj.id,'attackable'))
 								$.trans.frame(30, 10); //light weapon attack
@@ -526,7 +524,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					if( $.proper('dash_backattack') || //back attack
 						$.dirh()===($.ps.vx>0?1:-1)) //if not turning back
 					{
-						if( $.hold.obj && $.proper($.hold.obj.id,'attackable')) //light weapon attack
+						if( $.hold.obj && $.proper($.hold.obj.id,'dash_throw')) //light weapon attack
 							$.trans.frame(40, 10);
 						else
 							$.trans.frame(90, 10);

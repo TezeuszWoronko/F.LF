@@ -509,8 +509,12 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 			prop=id;
 			id=$.id;
 		}
-		if( $.match.spec[id])
-			return $.match.spec[id][prop];
+		if( $.match.spec.ID[id] && $.match.spec.ID[id][prop] != null)
+			return $.match.spec.ID[id][prop];
+		var obj = $.match.data.object.find(elem => elem.id === id)
+		if(obj != null && obj.type != null) {
+			return $.match.spec.TYPE[obj.type][prop]
+		} 
 		return undefined;
 	}
 
