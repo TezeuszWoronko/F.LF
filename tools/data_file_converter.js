@@ -279,7 +279,8 @@ function convert_LF2_to_JSON(input)
 	function add(T,S,s) //target, "property_s_value"
 	{
 		var A = S.split(s);
-		// if( A.length > 2) console.error('error '+ A.join());
+		if( A.length > 2) 
+			console.error('error  '+ A.join());
 		if( A[0]) A[0] = trim(A[0]);
 		if( A[1]) A[1] = trim(A[1]);
 		if( A[1])
@@ -309,6 +310,7 @@ function convert_LF2_to_JSON(input)
 	}
 	function addl(T,S) //add long: target, "P1_s1_V1_s2_P2_s1_V2..."
 	{
+		S = S.split('#')[0]
 		if( S.indexOf('catchingact')===-1 &&
 			S.indexOf('caughtact')===-1 &&
 			S.indexOf('zboundary')===-1 &&
@@ -319,10 +321,9 @@ function convert_LF2_to_JSON(input)
 			S=S.replace(/ /g,'  ');
 			S=S.replace(/:/g,': '); //normalize S
 		}
-
-		var B = S.split('  ');
+		var B = [...S.matchAll(/[^\s]+: [^\s]+( [^\s]+)?/g)];
 		for( var i in B)
-			add(T,B[i],': ');
+			add(T,B[i][0],': ');
 	}
 	
 	/*\
