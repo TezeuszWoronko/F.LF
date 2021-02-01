@@ -254,11 +254,11 @@ function Manager(package, buildinfo)
 			return randomseed.next();
 		}
 		randomseed = new Random();
-		randomseed.seed(824163532);
+		randomseed.seed(Date.now());
 		
 		
 		//prepare
-		char_list = util.select_from(package.data.object,{type:'character'});
+		char_list = util.select_from(package.data.object,{type:'character', hidden:'false'});
 		char_list[-1] = {name:'Random'}
 		img_list = Futil.extract_array(char_list,'pic').pic;
 		img_list.waiting = sel.waiting.pic;
