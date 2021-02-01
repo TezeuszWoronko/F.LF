@@ -315,7 +315,11 @@ mech.prototype.set_pos= function(x,y,z)
 	var sp=this.sp;
 	var fD=this.frame.D;
 
-	ps.x=x; ps.y=y; ps.z=z;
+	ps.x=x; ps.y=y; 
+	if(z)
+	{
+		ps.z=z;
+	}
 	if( ps.z < this.bg.zboundary[0]) //z bounding
 		ps.z = this.bg.zboundary[0];
 	if( ps.z > this.bg.zboundary[1])
@@ -323,7 +327,8 @@ mech.prototype.set_pos= function(x,y,z)
 
 	ps.sx = ps.dir==='right'? (ps.x-fD.centerx):(ps.x+fD.centerx-sp.w);
 	ps.sy = y - fD.centery;
-	ps.sz = z;
+	if(z)
+		ps.sz = z;
 }
 
 mech.prototype.dynamics= function()

@@ -69,10 +69,7 @@ var GC=Global.gameplay;
 			case 'TU':
 				/*	<zort> chasing ball seeks for 72 frames, not counting just after (quantify?) it's launched or deflected. Internally, LF2 keeps a variable keeping track of how long the ball has left to seek, which starts at 500 and decreases by 7 every frame until it reaches 0. while seeking, its maximum x speed is 14, and its x acceleration is 0.7; it can climb or descend, by 1 px/frame; and its maximum z speed is 2.2, with z acceleration .4. when out of seeking juice, its speed is 17. the -7 in the chasing algorithm comes from hit_a: 7.
 				*/
-				if( $.frame.D.hit_Fa===1 ||
-					$.frame.D.hit_Fa===2 ||
-					$.frame.D.hit_Fa===3 ||
-					$.frame.D.hit_Fa===7)
+				if( $.frame.D.hit_Fa && $.frame.D.hit_Fa !== 0 && $.frame.D.hit_Fa !== 10)
 				if( $.health.hp>0)
 				{
 					$.chase_target();
@@ -255,9 +252,9 @@ var GC=Global.gameplay;
 				else if( ITR[j].kind===8) //heal
 				{
 					if( hit[k].type==='character') //only affects character
-					if( hit[k].heal(ITR[j].injury))
 					{
 						$.trans.frame(ITR[j].dvx);
+						this.set_pos(hit[k].ps.x, hit[k].ps.y, hit[k].ps.z);
 					}
 				}
 			}

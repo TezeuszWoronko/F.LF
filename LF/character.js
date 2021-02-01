@@ -1839,6 +1839,19 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					}
 				}
 			break;
+			case 8: 
+				for( var t in hit)
+				{
+					if( hit[t].type==='character') //only affects character
+					{
+						$.trans.frame(ITR.dvx);
+						this.set_pos(hit[t].ps.x, hit[t].ps.y, hit[t].ps.z);
+						this.ps.vx=0;
+						this.ps.vy=0;
+						this.ps.vz=0;
+					}
+				}
+			break;
 			}
 		}
 	}
