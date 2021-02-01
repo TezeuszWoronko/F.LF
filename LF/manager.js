@@ -258,7 +258,8 @@ function Manager(package, buildinfo)
 		
 		
 		//prepare
-		char_list = util.select_from(package.data.object,{type:'character', hidden:'false'});
+		char_list = util.select_from(package.data.object,{type:'character'});
+		char_list = util.select_from(char_list,function(obj){return obj.data.bmp.hidden === 0 || !obj.data.bmp.hidden});
 		char_list[-1] = {name:'Random'}
 		img_list = Futil.extract_array(char_list,'pic').pic;
 		img_list.waiting = sel.waiting.pic;
