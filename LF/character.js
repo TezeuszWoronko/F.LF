@@ -1398,8 +1398,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		var player = {team: T.parent.team, id: T.opoint.oid, controller: {id: T.parent.match.data.AI[0].id, type: 'AIscript'}}
 		var charData = T.parent.match.create_character(player, T.parent.match);
 		charData.char.set_pos(T.pos.x + T.opoint.x, T.pos.y + T.opoint.y, T.z);
-		charData.char.ps.dir = T.dir;
-		charData.char.trans.frame(T.opoint.action);
+		charData.char.switch_dir(T.dir);
+		charData.char.trans.frame(T.opoint.action, 99);
+		charData.char.trans.trans();
 		T.parent.match.destroy_object(this);
 	}
 	
