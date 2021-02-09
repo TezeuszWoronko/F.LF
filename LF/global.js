@@ -94,6 +94,7 @@ GC.default.cpoint={};
 GC.default.cpoint.hurtable= 0; //default cpoint hurtable
 GC.default.cpoint.cover= 0; //default cpoint cover
 GC.default.cpoint.vaction= 135; //default frame being thrown
+GC.default.cpoint.decreaseTime = 100;
 
 GC.default.wpoint={};
 GC.default.wpoint.cover= 0;

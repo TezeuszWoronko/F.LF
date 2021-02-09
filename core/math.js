@@ -132,6 +132,10 @@ length: function (A)
 {
 	return Math.sqrt( A.x*A.x + A.y*A.y );
 },
+abs: function (A)
+{
+	return A<0?-A:A;
+},
 /*\
  * math.distance
  * |AB|

@@ -613,7 +613,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			switch (event) {
 			case 'state_entry':
 				$.statemem.stateTU=true;
-				$.statemem.counter=43;
+				$.statemem.counter=GC.default.cpoint.decreaseTime;
 				$.statemem.attacks=0;
 				$.ps.vx = 0;
 				$.ps.vy = 0;
@@ -630,9 +630,6 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				 {
 					 case 123: //a successful attack
 						$.statemem.attacks++;
-						//commented out ~Tobi
-						//$.statemem.counter+=3;
-						//$.trans.inc_wait(1);
 					 	break;
 					 case 233: case 234:
 					 	$.trans.inc_wait(-1);
@@ -649,6 +646,17 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					if($.frame.D.cpoint.injury)
 					{
 						$.catching.injury($.frame.D.cpoint.injury);
+						$.effect_stuck(0,1);
+					}
+					//decrase: positive and negative values decrease counter, but a catch can only end if decrease value is negative in this frame
+					if($.frame.D.cpoint.decrease)
+					{
+						$.statemem.counter -= Math.abs($.frame.D.cpoint.decrease);
+						if($.frame.D.cpoint.decrease < 0 && $.statemem.counter < 0)
+						{
+							$.catching.caught_release();
+							$.trans.frame(999,0);
+						}
 					}
 				}
 			break;
@@ -688,18 +696,6 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			}
 			break; //TU
 			
-			case 'post_combo':
-				if( $.catching)
-					$.statemem.counter--;
-				if( $.statemem.counter<=0)
-				if( !($.frame.N===122 && $.statemem.attacks===4)){ //let it finish the 5th punch
-				// if( $.frame.N===121 || $.frame.N===122)
-				// {
-					$.catching.caught_release();
-					$.trans.frame(999,15);
-				}
-			break;
-
 			case 'combo':
 			switch(K)
 			{
@@ -734,7 +730,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 					if( $.frame.N===121)
 					if($.frame.D.cpoint.jaction)
 					{
-						$.trans.frame($.frame.D.cpoint.jaction, 10);
+						$.trans.frame($.frame.D.cpoint.jaction, 0);
 						return 1;
 					}
 				break;
