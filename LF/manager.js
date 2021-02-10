@@ -1165,7 +1165,7 @@ function Manager(package, buildinfo)
 										options:this.options
 									}); return; //Fight!
 									case 1:
-										this.reset();
+										this.reset(false);
 										this.set_step(0);
 									return; //Reset All
 									case 2: //Reset Random
@@ -1264,7 +1264,7 @@ function Manager(package, buildinfo)
 					return players[i].type==='human'?sel.text.color[2]:sel.text.color[3];
 				}
 			},
-			reset:function()
+			reset:function(resetChars = true)
 			{
 				var players = this.players;
 				this.state.step = 0;
@@ -1278,7 +1278,7 @@ function Manager(package, buildinfo)
 					players[i].type = 'human';
 					players[i].name = '';
 					players[i].team = 0;
-					players[i].selected = -1;
+					if(resetChars)players[i].selected = -1;
 					players[i].selected_AI = -1;
 				}
 				this.options.background = -1;
