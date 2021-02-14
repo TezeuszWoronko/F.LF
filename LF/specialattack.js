@@ -43,7 +43,9 @@ var GC=Global.gameplay;
 
 			case 'leaving':
 				if( $.bg.leaving($, 200)) //only when leaving far
+				{
 					$.trans.frame(1000); //destroy
+				}
 			break;
 			
 			case 'hit':
@@ -246,7 +248,7 @@ var GC=Global.gameplay;
 					ITR[j].kind===15 || //whirlwind
 					ITR[j].kind===16) //whirlwind
 				{
-					if( !(hit[k].type==='character' && hit[k].team===$.team)) //cannot attack characters of same team
+					if( !(hit[k].type==='character' && hit[k].team===$.team && $.state() !== 18)) //cannot attack characters of same team
 					if( !(ITR[j].kind===0 && hit[k].type!=='character' && hit[k].team===$.team && hit[k].ps.dir===$.ps.dir)) //kind:0 can only attack objects of same team if head on collide
 					if( !$.itr.arest)
 					if( $.attacked(hit[k].hit(ITR[j],$,{x:$.ps.x,y:$.ps.y,z:$.ps.z},vol)))
