@@ -59,6 +59,12 @@ var GC=Global.gameplay;
 			$.states['300X'].call($, event, K);
 		},
 
+		'9':function(event,K) //catching, throw lying man
+		{	
+			var $=this;
+			$.handle_catching_state(event, K);
+		},
+
 		/*	State 300X - Ball States
 			descriptions taken from
 			http://lf-empire.de/lf2-empire/data-changing/reference-pages/182-states?showall=&start=29
@@ -255,6 +261,27 @@ var GC=Global.gameplay;
 					{
 						$.trans.frame(ITR[j].dvx);
 						this.set_pos(hit[k].ps.x, hit[k].ps.y, hit[k].ps.z);
+					}
+				}
+				else if(ITR[j].kind===1 || ITR[j].kind===3)
+				{
+					if( hit[k].team !== $.team) //only catch other teams
+					if( hit[k].type==='character') //only catch characters
+					if( (ITR[j].kind===1 && hit[k].state()===16) //you are in dance of pain
+					 || (ITR[j].kind===3)) //super catch
+					if( !$.itr.arest)
+					{
+						var dir = hit[k].caught_a(ITR[j],$,{x:$.ps.x,y:$.ps.y,z:$.ps.z});
+						if( dir)
+						{
+							$.itr_arest_update(ITR[j]);
+							if( dir==='front')
+								$.trans.frame(ITR[j].catchingact[0], 10);
+							else
+								$.trans.frame(ITR[j].catchingact[1], 10);
+							$.catching=hit[k];
+							break;
+						}
 					}
 				}
 			}
