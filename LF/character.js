@@ -1025,13 +1025,27 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			case 'combo':
 				console.log("transformation");
 				var $=this;
+
 				var id = $.frame.D.state - 8000;
 				$.player.id = id;
-				var charData = $.match.create_character($.player, $.match);
-				charData.char.set_pos($.ps.x, $.ps.y, $.ps.z);
-				charData.char.ps.dir = $.ps.dir;
-				charData.char.health = $.health;
-				charData.char.trans.frame($.frame.D.next);
+				switch($.match.data.object.find(elem => elem.id == id).type) {
+					case 'character':
+						var charData = $.match.create_character($.player, $.match);
+						charData.char.set_pos($.ps.x, $.ps.y, $.ps.z);
+						charData.char.switch_dir($.ps.dir);
+						charData.char.health = $.health;
+						charData.char.trans.frame($.frame.D.next, 99);
+						charData.char.trans.trans();
+						break
+					default: // create object
+						var opoint = {
+							oid: id, action: 0, facing: 0, 
+							dvx: $.ps.vx, dvy: $.ps.vz, kind: 1, x: $.ps.x, y: $.ps.z
+						}
+						$.match.create_object(opoint, $)
+						break
+				}
+				
 				$.match.destroy_object(this);
 				break;
 			}
@@ -1269,7 +1283,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		var $=this;
 		var player = {team: T.parent.team, id: T.opoint.oid, controller: {id: T.parent.match.data.AI[0].id, type: 'AIscript'}}
 		var charData = T.parent.match.create_character(player, T.parent.match);
-		charData.char.set_pos(T.pos.x + T.opoint.x, T.pos.y + T.opoint.y, T.z);
+		var x = T.pos.x ? T.pos.x : 0
+		var y = T.pos.y ? T.pos.y : 0
+		charData.char.set_pos(x + T.opoint.x, y + T.opoint.y, T.z);
 		charData.char.switch_dir(T.dir);
 		charData.char.trans.frame(T.opoint.action, 99);
 		charData.char.trans.trans();
