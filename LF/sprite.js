@@ -99,7 +99,9 @@ function sprite (bmp, parent)
 \*/
 sprite.prototype.destroy = function()
 {
-	this.sp.remove();
+	if(this.sp) {
+		this.sp.remove();
+	}
 	this.sp=null;
 	this.ani.length=0;
 }
