@@ -65,6 +65,11 @@ var GC=Global.gameplay;
 			$.handle_catching_state(event, K);
 		},
 
+		'400':function(event,K) //teleport to the nearest enemy
+		{	
+			this.handle_teleport_state(event, K);
+		},
+
 		/*	State 300X - Ball States
 			descriptions taken from
 			http://lf-empire.de/lf2-empire/data-changing/reference-pages/182-states?showall=&start=29

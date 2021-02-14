@@ -973,23 +973,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		}},
 
 		'400':function(event,K) //teleport to the nearest enemy
-		{	var $=this;
-			switch (event) {
-			case 'frame':
-				var targets = $.match.scene.query(null, $, {
-					not_team:$.team,
-					type:'character',
-					sort:'distance'
-				});
-				if( targets.length)
-				{
-					var en = targets[0];
-					$.ps.x = en.ps.x - 120*($.dirh());
-					$.ps.y = 0;
-					$.ps.z = en.ps.z;
-				}
-			break;
-		}},
+		{	
+			this.handle_teleport_state(event, K);
+		},
 
 		'401':function(event,K) //teleport to the furthest teammate
 		{	var $=this;

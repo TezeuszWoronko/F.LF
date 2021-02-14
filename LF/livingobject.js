@@ -485,6 +485,27 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 		return ($.ps.dir==='left'?-1:1);
 	}
 
+	livingobject.prototype.handle_teleport_state = function(event, K)
+	{
+		var $=this;
+		switch (event) {
+		case 'frame':
+			var targets = $.match.scene.query(null, $, {
+				not_team:$.team,
+				type:'character',
+				sort:'distance'
+			});
+			if( targets.length)
+			{
+				var en = targets[0];
+				$.ps.x = en.ps.x - 120*($.dirh());
+				$.ps.y = 0;
+				$.ps.z = en.ps.z;
+			}
+			break;
+		}
+	}
+
 	livingobject.prototype.handle_catching_state = function(event, K)
 	{
 		var $=this;
