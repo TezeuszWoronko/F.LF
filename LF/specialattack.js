@@ -43,7 +43,9 @@ var GC=Global.gameplay;
 
 			case 'leaving':
 				if( $.bg.leaving($, 200)) //only when leaving far
+				{
 					$.trans.frame(1000); //destroy
+				}
 			break;
 			
 			case 'hit':
@@ -57,6 +59,17 @@ var GC=Global.gameplay;
 
 			}
 			$.states['300X'].call($, event, K);
+		},
+
+		'9':function(event,K) //catching, throw lying man
+		{	
+			var $=this;
+			$.handle_catching_state(event, K);
+		},
+
+		'400':function(event,K) //teleport to the nearest enemy
+		{	
+			this.handle_teleport_state(event, K);
 		},
 
 		/*	State 300X - Ball States
@@ -235,7 +248,7 @@ var GC=Global.gameplay;
 					ITR[j].kind===15 || //whirlwind
 					ITR[j].kind===16) //whirlwind
 				{
-					if( !(hit[k].type==='character' && hit[k].team===$.team)) //cannot attack characters of same team
+					if( !(hit[k].type==='character' && hit[k].team===$.team && $.state() !== 18)) //cannot attack characters of same team
 					if( !(ITR[j].kind===0 && hit[k].type!=='character' && hit[k].team===$.team && hit[k].ps.dir===$.ps.dir)) //kind:0 can only attack objects of same team if head on collide
 					if( !$.itr.arest)
 					if( $.attacked(hit[k].hit(ITR[j],$,{x:$.ps.x,y:$.ps.y,z:$.ps.z},vol)))
@@ -255,6 +268,27 @@ var GC=Global.gameplay;
 					{
 						$.trans.frame(ITR[j].dvx);
 						this.set_pos(hit[k].ps.x, hit[k].ps.y, hit[k].ps.z);
+					}
+				}
+				else if(ITR[j].kind===1 || ITR[j].kind===3)
+				{
+					if( hit[k].team !== $.team) //only catch other teams
+					if( hit[k].type==='character') //only catch characters
+					if( (ITR[j].kind===1 && hit[k].state()===16) //you are in dance of pain
+					 || (ITR[j].kind===3)) //super catch
+					if( !$.itr.arest)
+					{
+						var dir = hit[k].caught_a(ITR[j],$,{x:$.ps.x,y:$.ps.y,z:$.ps.z});
+						if( dir)
+						{
+							$.itr_arest_update(ITR[j]);
+							if( dir==='front')
+								$.trans.frame(ITR[j].catchingact[0], 10);
+							else
+								$.trans.frame(ITR[j].catchingact[1], 10);
+							$.catching=hit[k];
+							break;
+						}
 					}
 				}
 			}

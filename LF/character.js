@@ -609,134 +609,10 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		}},
 
 		'9':function(event,K) //catching, throw lying man
-		{	var $=this;
-			switch (event) {
-			case 'state_entry':
-				$.statemem.stateTU=true;
-				$.statemem.counter=GC.default.cpoint.decreaseTime;
-				$.statemem.attacks=0;
-				$.ps.vx = 0;
-				$.ps.vy = 0;
-				$.ps.vz = 0;
-			break;
-
-			case 'state_exit':
-				$.catching=null;
-				$.ps.zz=0;
-			break;
-
-			case 'frame':
-				 switch ($.frame.N)
-				 {
-					 case 123: //a successful attack
-						$.statemem.attacks++;
-					 	break;
-					 case 233: case 234:
-					 	$.trans.inc_wait(-1);
-					 	break;
-				 }
-				if( $.catching && $.frame.D.cpoint)
-				{
-					$.catching.caught_b(
-						$.mech.make_point($.frame.D.cpoint),
-						$.frame.D.cpoint,
-						$.ps.dir,
-						$.dirv()
-					);
-					if($.frame.D.cpoint.injury)
-					{
-						$.catching.injury($.frame.D.cpoint.injury);
-						$.effect_stuck(0,1);
-					}
-					//decrase: positive and negative values decrease counter, but a catch can only end if decrease value is negative in this frame
-					if($.frame.D.cpoint.decrease)
-					{
-						$.statemem.counter -= Math.abs($.frame.D.cpoint.decrease);
-						if($.frame.D.cpoint.decrease < 0 && $.statemem.counter < 0)
-						{
-							$.catching.caught_release();
-							$.trans.frame(999,0);
-						}
-					}
-				}
-			break;
-
-			case 'TU':
-			if( $.catching &&
-				$.caught_cpointkind()===1 &&
-				$.catching.caught_cpointkind()===2 )
-			{	//really catching you
-				if( $.statemem.stateTU)
-				{	$.statemem.stateTU=false;
-					/**the immediate `TU` after `state`. the reason for this is a synchronization issue,
-						i.e. it must be waited until both catcher and catchee transited to the second frame
-						and it is not known at the point of `frame` event, due to different scheduling.
-					 */
-
-					//injury
-					if( $.frame.D.cpoint.injury)
-					{
-						if( $.attacked($.catching.hit($.frame.D.cpoint, $, {x:$.ps.x,y:$.ps.y,z:$.ps.z}, null)))
-							$.trans.inc_wait(1, 10, 99); //lock until frame transition
-					}
-					//cover
-					var cover = GC.default.cpoint.cover;
-					if( $.frame.D.cpoint.cover!==undefined) cover=$.frame.D.cpoint.cover;
-					if( cover===0 || cover===10 )
-						$.ps.zz=1;
-					else
-						$.ps.zz=-1;
-
-					if( $.frame.D.cpoint.dircontrol===1)
-					{
-						if($.con.state.left) $.switch_dir('left');
-						if($.con.state.right) $.switch_dir('right');
-					}
-				}
-			}
-			break; //TU
-			
-			case 'combo':
-			switch(K)
-			{
-				case 'att':
-					if( $.frame.D.cpoint &&
-						($.frame.D.cpoint.taction ||
-						$.frame.D.cpoint.aaction))
-					{
-						var dx = $.con.state.left !== $.con.state.right;
-						var dy = $.con.state.up   !== $.con.state.down;
-						if( (dx || dy) && $.frame.D.cpoint.taction)
-						{
-							var tac = $.frame.D.cpoint.taction;
-							if( tac<0)
-							{	//turn myself around
-								$.switch_dir($.ps.dir==='right'?'left':'right'); //toogle dir
-								$.trans.frame(-tac, 10);
-							}
-							else
-							{
-								$.trans.frame(tac, 10);
-							}
-							$.statemem.counter+=10;
-						}
-						else if($.frame.D.cpoint.aaction)
-							$.trans.frame($.frame.D.cpoint.aaction, 10);
-						var nextframe=$.data.frame[$.trans.next()];
-						$.catching.caught_throw(nextframe.cpoint, $.dirv());
-					}
-				return 1; //always return true so that `att` is not re-fired next frame
-				case 'jump':
-					if( $.frame.N===121)
-					if($.frame.D.cpoint.jaction)
-					{
-						$.trans.frame($.frame.D.cpoint.jaction, 0);
-						return 1;
-					}
-				break;
-			}
-			break;
-		}},
+		{	
+			var $=this;
+			$.handle_catching_state(event, K);
+		},
 
 		'10':function(event,K) //being caught
 		{	var $=this;
@@ -1097,23 +973,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		}},
 
 		'400':function(event,K) //teleport to the nearest enemy
-		{	var $=this;
-			switch (event) {
-			case 'frame':
-				var targets = $.match.scene.query(null, $, {
-					not_team:$.team,
-					type:'character',
-					sort:'distance'
-				});
-				if( targets.length)
-				{
-					var en = targets[0];
-					$.ps.x = en.ps.x - 120*($.dirh());
-					$.ps.y = 0;
-					$.ps.z = en.ps.z;
-				}
-			break;
-		}},
+		{	
+			this.handle_teleport_state(event, K);
+		},
 
 		'401':function(event,K) //teleport to the furthest teammate
 		{	var $=this;
@@ -1149,13 +1011,27 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			case 'combo':
 				console.log("transformation");
 				var $=this;
+
 				var id = $.frame.D.state - 8000;
 				$.player.id = id;
-				var charData = $.match.create_character($.player, $.match);
-				charData.char.set_pos($.ps.x, $.ps.y, $.ps.z);
-				charData.char.ps.dir = $.ps.dir;
-				charData.char.health = $.health;
-				charData.char.trans.frame($.frame.D.next);
+				switch($.match.data.object.find(elem => elem.id == id).type) {
+					case 'character':
+						var charData = $.match.create_character($.player, $.match);
+						charData.char.set_pos($.ps.x, $.ps.y, $.ps.z);
+						charData.char.switch_dir($.ps.dir);
+						charData.char.health = $.health;
+						charData.char.trans.frame($.frame.D.next, 99);
+						charData.char.trans.trans();
+						break
+					default: // create object
+						var opoint = {
+							oid: id, action: 0, facing: 0, 
+							dvx: $.ps.vx, dvy: $.ps.vz, kind: 1, x: $.ps.x, y: $.ps.z
+						}
+						$.match.create_object(opoint, $)
+						break
+				}
+				
 				$.match.destroy_object(this);
 				break;
 			}
@@ -1393,7 +1269,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		var $=this;
 		var player = {team: T.parent.team, id: T.opoint.oid, controller: {id: T.parent.match.data.AI[0].id, type: 'AIscript'}}
 		var charData = T.parent.match.create_character(player, T.parent.match);
-		charData.char.set_pos(T.pos.x + T.opoint.x, T.pos.y + T.opoint.y, T.z);
+		var x = T.pos.x ? T.pos.x : 0
+		var y = T.pos.y ? T.pos.y : 0
+		charData.char.set_pos(x + T.opoint.x, y + T.opoint.y, T.z);
 		charData.char.switch_dir(T.dir);
 		charData.char.trans.frame(T.opoint.action, 99);
 		charData.char.trans.trans();
@@ -1768,9 +1646,9 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		var ITR_LIST=Futil.make_array($.frame.D.itr);
 
 		//TODO
-		/*某葉: 基本上會以先填入的itr為優先， 但在範圍重複、同effect的情況下的2組itr，
-			攻擊時，會隨機指定其中一個itr的效果。
-			（在範圍有部份重複或是完全重複的部份才有隨機效果。）*/
+		/*Certain Ye: Basically, the first filled in itr will be given priority, but in the case of repeated ranges and the same effect, the two groups of itr
+		When attacking, the effect of one of the itr will be randomly assigned.
+		(The random effect will only be achieved when the range is partially or completely repeated.)*/
 
 		for( var i in ITR_LIST)
 		{
@@ -1905,68 +1783,6 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			$.hold.obj.drop(dvx,dvy);
 			$.hold.obj=null;
 		}
-	}
-
-	/** inter-living objects protocol: catch & throw
-		for details see http://f-lf2.blogspot.hk/2013/01/inter-living-object-interactions.html
-	 */
-	character.prototype.caught_a=function(ITR, att, attps)
-	{	//this is called when the catcher has an ITR with kind: 1 or 3
-		var $=this;
-		if( (ITR.kind===1 && $.state()===16) //I am in dance of pain
-		 || (ITR.kind===3)) //that is a super catch 
-		{
-			if( (attps.x > $.ps.x)===($.ps.dir==='right'))
-				$.trans.frame(ITR.caughtact[0], 22);
-			else
-				$.trans.frame(ITR.caughtact[1], 22);
-			$.health.fall=0;
-			$.catching=att;
-			$.itr.attacker=att;
-			$.drop_weapon();
-			return (attps.x > $.ps.x)===($.ps.dir==='right') ? 'front':'back';
-		}
-	}
-	character.prototype.caught_b=function(holdpoint,cpoint,adir,vdir)
-	{	//this is called when the catcher has a cpoint with kind: 1
-		var $=this;
-		$.caught_b_holdpoint=holdpoint;
-		$.caught_b_cpoint=cpoint;
-		$.caught_b_adir=adir;
-		$.caught_b_vdir=vdir;
-		//store this info and process it at TU
-	}
-	character.prototype.caught_cpointkind=function()
-	{
-		var $=this;
-		return $.frame.D.cpoint ? $.frame.D.cpoint.kind:0;
-	}
-	character.prototype.caught_cpointhurtable=function()
-	{
-		var $=this;
-		if( $.frame.D.cpoint && $.frame.D.cpoint.hurtable!==undefined)
-			return $.frame.D.cpoint.hurtable;
-		else
-			return GC.default.cpoint.hurtable;
-	}
-	character.prototype.caught_throw=function(cpoint,vdir)
-	{	//I am being thrown
-		var $=this;
-		if( cpoint.vaction!==undefined)
-			$.trans.frame(cpoint.vaction, 22);
-		else
-			$.trans.frame(GC.default.cpoint.vaction, 22);
-		$.caught_throwz = vdir;
-	}
-	character.prototype.caught_release=function()
-	{
-		var $=this;
-		$.catching=0;
-		$.trans.frame(181,22);
-		$.effect.dvx=3; //magic number
-		$.effect.dvy=-3;
-		$.effect.timein=-1;
-		$.effect.timeout=0;
 	}
 
 	return character;

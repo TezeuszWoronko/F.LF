@@ -290,9 +290,11 @@ define(['core/util','LF/sprite-select','core/support','LF/global'],function(Futi
 		var $=this;
 		if( !xt)
 			xt = 0;
-		var nx=o.ps.sx+o.ps.vx,
-			ny=o.ps.sy+o.ps.vy;
-		return (nx+o.sp.width<0-xt || nx>$.width+xt || ny<-600 || ny>100);
+		var nx=o.ps.sx+o.ps.vx;
+		//commented out code destroyed objects leaving the Y axis. we dont want that for helper objects.
+		//	ny=o.ps.sy+o.ps.vy;
+		//return (nx+o.sp.width<0-xt || nx>$.width+xt || ny<-600 || ny>100);
+		return (nx+o.sp.width<0-xt || nx>$.width+xt);
 	}
 
 	//get an absolute position using a ratio, e.g. get_pos(0.5,0.5) is exactly the mid point
