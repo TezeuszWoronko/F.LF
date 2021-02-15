@@ -248,7 +248,10 @@ var GC=Global.gameplay;
 					ITR[j].kind===15 || //whirlwind
 					ITR[j].kind===16) //whirlwind
 				{
-					if( !(hit[k].type==='character' && hit[k].team===$.team && $.state() !== 18)) //cannot attack characters of same team
+					//state 18 allows for hitting teammates but not with effect 21/22
+					var bShouldHitTeamate = !ITR[j].effect || ITR[j].effect && ITR[j].effect !== 21 && ITR[j].effect !== 22;
+					bShouldHitTeamate = bShouldHitTeamate && $.state() === 18
+					if( !(hit[k].type==='character' && hit[k].team===$.team && !bShouldHitTeamate)) //cannot attack characters of same team
 					if( !(ITR[j].kind===0 && hit[k].type!=='character' && hit[k].team===$.team && hit[k].ps.dir===$.ps.dir)) //kind:0 can only attack objects of same team if head on collide
 					if( !$.itr.arest)
 					if( $.attacked(hit[k].hit(ITR[j],$,{x:$.ps.x,y:$.ps.y,z:$.ps.z},vol)))

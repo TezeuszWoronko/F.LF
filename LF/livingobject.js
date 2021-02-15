@@ -348,6 +348,7 @@ function ( Global, Sprite, Mech, AI, util, Fsprite, Futil)
 	livingobject.prototype.effect_create=function(num,duration,dvx,dvy)
 	{
 		var $=this;
+		num /= 10; // effect 23 is unhandled
 		if( num >= $.effect.num)
 		{
 			var efid= num+GC.effect.num_to_id;
