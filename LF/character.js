@@ -955,6 +955,14 @@ function(livingobject, Global, Fcombodec, Futil, util)
 			break;
 		}},
 
+		'100':function(event,K) //flying, when hits ground goes to frame 94
+		{	var $=this;
+			switch (event) {
+			case 'fell_onto_ground':
+				$.trans.frame(94,99);
+			break;
+		}},
+
 		'301':function(event,K) //deep specific
 		{	var $=this;
 			switch (event) {
