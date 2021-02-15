@@ -13,6 +13,10 @@ function(livingobject, Global, Fcombodec, Futil, util)
 		{	var $=this;
 			switch (event) {
 			case 'frame':
+				if( $.state_update('post_interaction'))
+					; //do nothing
+				else
+					$.post_interaction();
 				//health reduce
 				if( $.frame.D.mp)
 				{
@@ -43,11 +47,6 @@ function(livingobject, Global, Fcombodec, Futil, util)
 				$.opoint();
 			break;
 			case 'TU':
-				if( $.state_update('post_interaction'))
-					; //do nothing
-				else
-					$.post_interaction();
-
 				var ps=$.ps;
 				if( ps.y===0 && ps.vy===0 && $.frame.N===212 && $.frame.PN!==211)
 				{
