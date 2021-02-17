@@ -74,7 +74,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 						$.trans.frame(result, 15);
 					else
 					{
-						if( $.state()===13) //frozen
+						if( $.state()===13 || $.state()===100) //frozen
 							; //do nothing
 						else if( $.frame.N===212) //jumping
 							$.trans.frame(215, 15); //crouch
