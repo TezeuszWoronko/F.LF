@@ -67,7 +67,7 @@ function(livingobject, Global, Fcombodec, Futil, util)
 						);
 					}
 				}
-				else if( ps.y+ps.vy>=0 && ps.vy>0) //predict falling onto the ground
+				else if( ps.y+ps.vy>=0 && (ps.vy>0 || $.frame.N === 189 || $.frame.N === 183)) //predict falling onto the ground
 				{
 					var result = $.state_update('fall_onto_ground');
 					if( result)
